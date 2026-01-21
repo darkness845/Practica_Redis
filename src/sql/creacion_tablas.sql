@@ -1,5 +1,11 @@
 -- Esquema de Base de Datos - eSports
 
+-- DROP TABLE IF EXISTS partidas CASCADE;
+-- DROP TABLE IF EXISTS equipos_torneos CASCADE;
+-- DROP TABLE IF EXISTS jugadores CASCADE;
+-- DROP TABLE IF EXISTS torneos CASCADE;
+-- DROP TABLE IF EXISTS equipos CASCADE;
+
 -- Tabla equipos
 CREATE TABLE IF NOT EXISTS equipos (
   id SERIAL PRIMARY KEY,

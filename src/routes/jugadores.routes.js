@@ -5,5 +5,6 @@ const router = Router();
 
 router.post('/', controller.createJugador);
 router.get('/', controller.getAllJugadores);
+router.get('/:id/stats', controller.getJugadorStats);
 
 export default router;

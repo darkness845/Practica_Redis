@@ -11,3 +11,12 @@ export function updateResultado(id, resultado) {
 export function getPartidasByTorneo(torneoId) {
   return supabase.from('partidas').select('*').eq('torneo_id', torneoId);
 }
+
+export function getPartidasByEquipo(equipoId) {
+  return supabase
+    .from('partidas')
+    .select('*')
+    .or(
+      `equipo_local_id.eq.${equipoId},equipo_visitante_id.eq.${equipoId}`
+    );
+}

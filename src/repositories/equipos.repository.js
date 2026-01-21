@@ -12,6 +12,10 @@ export async function getEquipoById(id) {
   return await supabase.from('equipos').select('*').eq('id', id).single();
 }
 
+export async function getEquiposByIds(ids) {
+  return await supabase.from('equipos').select('*').in('id', ids);
+}
+
 export async function updateEquipo(id, data) {
   return await supabase.from('equipos').update(data).eq('id', id).select();
 }

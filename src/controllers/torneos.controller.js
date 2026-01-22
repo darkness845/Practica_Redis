@@ -77,3 +77,25 @@ export async function getEquiposDeTorneo(req, res) {
 
   res.json(data.map(e => e.equipos));
 }
+
+export async function updateTorneo(req, res) {
+  const { torneoId } = req.params;
+  const { nombre, fecha_inicio, fecha_fin } = req.body;
+
+  if (!nombre && !fecha_inicio && !fecha_fin) {
+    return res.status(400).json({
+      error: 'Debe enviarse al menos un campo para actualizar'
+    });
+  }
+
+  const { data, error } =
+    await service.actualizarTorneo(torneoId, req.body);
+
+  if (error || !data) {
+    return res.status(404).json({
+      error: 'Torneo no encontrado'
+    });
+  }
+
+  res.json(data);
+}

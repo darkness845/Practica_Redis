@@ -78,3 +78,19 @@ export async function listarTorneos() {
 export async function obtenerEquiposDeTorneo(torneoId) {
   return torneoRepo.getEquiposByTorneo(torneoId);
 }
+
+export async function actualizarTorneo(torneoId, data) {
+  const camposPermitidos = ['nombre', 'fecha_inicio', 'fecha_fin'];
+
+  const datosFiltrados = Object.fromEntries(
+    Object.entries(data).filter(([key]) =>
+      camposPermitidos.includes(key)
+    )
+  );
+
+  if (Object.keys(datosFiltrados).length === 0) {
+    return { error: 'Campos no permitidos para actualizar' };
+  }
+
+  return torneoRepo.updateTorneo(torneoId, datosFiltrados);
+}

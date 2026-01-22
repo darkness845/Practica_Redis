@@ -5,7 +5,7 @@ const router = Router();
 
 router.post('/', controller.createPartida);
 router.get('/:id', controller.getPartida);
-router.post('/:id/resultado', controller.registrarResultado);
+router.put('/:id/resultado', controller.registrarResultado);
 router.get('/torneo/:torneoId', controller.getPartidasByTorneo);
 
 export default router;

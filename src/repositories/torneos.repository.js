@@ -9,7 +9,12 @@ export function getTorneoById(id) {
 }
 
 export function updateTorneo(id, data) {
-  return supabase.from('torneos').update(data).eq('id', id);
+  return supabase
+    .from('torneos')
+    .update(data)
+    .eq('id', id)
+    .select()
+    .single();
 }
 
 export function insertTorneoEquipos(data) {

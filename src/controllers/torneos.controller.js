@@ -143,3 +143,13 @@ export async function getTorneos(req, res) {
   if (error) return res.status(500).json(error);
   res.json(data);
 }
+
+export async function getEquiposDeTorneo(req, res) {
+  const { torneoId } = req.params;
+
+  const { data, error } = await torneoRepo.getEquiposByTorneo(torneoId);
+  if (error) return res.status(500).json(error);
+
+  res.json(data.map(e => e.equipos));
+}
+

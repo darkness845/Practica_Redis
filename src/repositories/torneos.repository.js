@@ -19,3 +19,11 @@ export function insertTorneoEquipos(data) {
 export function getAllTorneos() {
   return supabase.from('torneos').select('*');
 }
+
+export function getEquiposByTorneo(torneoId) {
+  return supabase
+    .from('equipos_torneo')
+    .select('equipos (*)')
+    .eq('torneo_id', torneoId);
+}
+

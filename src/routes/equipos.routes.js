@@ -1,14 +1,15 @@
 import { Router } from 'express';
 import * as controller from '../controllers/equipos.controller.js';
+import { apiKeyMiddleware, adminMiddleware } from '../middlewares/middleware.js';
 
 const router = Router();
 
-router.post('/', controller.createEquipo);
-router.get('/ranking', controller.rankingEquipos);
-router.get('/', controller.getAllEquipos);
-router.get('/:id', controller.getEquipo);
-router.put('/:id', controller.updateEquipo);
-router.delete('/:id', controller.deleteEquipo);
+router.post('/', apiKeyMiddleware, controller.createEquipo);
+router.get('/ranking', apiKeyMiddleware, controller.rankingEquipos);
+router.get('/', apiKeyMiddleware, controller.getAllEquipos);
+router.get('/:id', apiKeyMiddleware, controller.getEquipo);
 
+router.put('/:id', apiKeyMiddleware, adminMiddleware, controller.updateEquipo);
+router.delete('/:id', apiKeyMiddleware, adminMiddleware, controller.deleteEquipo);
 
 export default router;

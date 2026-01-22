@@ -29,3 +29,19 @@ export async function getTorneosByJugador(jugadorId) {
     .eq('id', jugadorId)
     .single();
 }
+
+export async function updateJugador(id, data) {
+  return supabase
+    .from('jugadores')
+    .update(data)
+    .eq('id', id)
+    .select()
+    .single();
+}
+
+export async function deleteJugador(id) {
+  return supabase
+    .from('jugadores')
+    .delete()
+    .eq('id', id);
+}

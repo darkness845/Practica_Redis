@@ -45,3 +45,11 @@ export async function obtenerTorneosJugador(jugadorId) {
 
   return torneos;
 }
+
+export async function actualizarJugador(id, data) {
+  return jugadoresRepo.updateJugador(id, data);
+}
+
+export async function eliminarJugador(id) {
+  return jugadoresRepo.deleteJugador(id);
+}

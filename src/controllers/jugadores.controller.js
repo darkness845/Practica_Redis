@@ -38,3 +38,38 @@ export async function getTorneosJugador(req, res) {
   }
   res.json(torneos);
 }
+
+export async function updateJugador(req, res) {
+  const { id } = req.params;
+  const { nickname, email, equipo_id } = req.body;
+
+  if (!nickname && !email && !equipo_id) {
+    return res.status(400).json({
+      error: 'Debe enviarse al menos un campo para actualizar'
+    });
+  }
+
+  const { data, error } = await service.actualizarJugador(id, req.body);
+
+  if (error || !data) {
+    return res.status(404).json({
+      error: 'Jugador no encontrado'
+    });
+  }
+
+  res.json(data);
+}
+
+export async function deleteJugador(req, res) {
+  const { id } = req.params;
+
+  const { error } = await service.eliminarJugador(id);
+
+  if (error) {
+    return res.status(500).json({
+      error: error.message
+    });
+  }
+
+  res.status(204).send();
+}

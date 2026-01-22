@@ -20,3 +20,15 @@ export function getPartidasByEquipo(equipoId) {
       `equipo_local_id.eq.${equipoId},equipo_visitante_id.eq.${equipoId}`
     );
 }
+
+export function getPartidaById(id) {
+  return supabase
+    .from('partidas')
+    .select(`
+      *,
+      equipo_local:equipos!partidas_equipo_local_id_fkey(nombre),
+      equipo_visitante:equipos!partidas_equipo_visitante_id_fkey(nombre)
+    `)
+    .eq('id', id)
+    .single();
+}

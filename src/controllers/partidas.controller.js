@@ -113,3 +113,11 @@ export async function getPartidasByTorneo(req, res) {
     data: partidas
   });
 }
+
+export async function getPartida(req, res) {
+  const { id } = req.params;
+  const { data, error } = await partidaRepo.getPartidaById(id);
+
+  if (error) return res.status(404).json({ error: 'Partida no encontrada' });
+  res.json(data);
+}

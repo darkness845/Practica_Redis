@@ -13,5 +13,9 @@ export function updateTorneo(id, data) {
 }
 
 export function insertTorneoEquipos(data) {
-  return supabase.from('equipos_torneo').insert(data).select();
+  return supabase.from('equipos_torneos').insert(data).select();
+}
+
+export function getAllTorneos() {
+  return supabase.from('torneos').select('*');
 }

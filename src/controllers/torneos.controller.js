@@ -137,3 +137,9 @@ export async function cambiarEstado(req, res) {
     message: `Torneo cambiado a estado ${estado}`
   });
 }
+
+export async function getTorneos(req, res) {
+  const { data, error } = await torneoRepo.getAllTorneos();
+  if (error) return res.status(500).json(error);
+  res.json(data);
+}

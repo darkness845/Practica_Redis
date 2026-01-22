@@ -1,61 +1,17 @@
 import { Partida } from '../models/Partida.js';
-import * as partidaRepo from '../repositories/partidas.repository.js';
-import * as torneoRepo from '../repositories/torneos.repository.js';
-import * as equipoRepo from '../repositories/equipos.repository.js';
+import * as service from '../services/partidas.service.js';
 
-/**
- * Crear partida
- */
 export async function createPartida(req, res) {
-  const {
-    torneo_id,
-    equipo_local_id,
-    equipo_visitante_id,
-    fecha
-  } = req.body;
+  const result = await service.crearPartida(req.body);
 
-  if (!torneo_id || !equipo_local_id || !equipo_visitante_id || !fecha) {
+  if (result?.error) {
     return res.status(400).json({
       error: 'Validación',
-      message: 'Faltan datos obligatorios'
+      message: result.error
     });
   }
 
-  if (equipo_local_id === equipo_visitante_id) {
-    return res.status(400).json({
-      error: 'Validación',
-      message: 'Los equipos no pueden ser iguales'
-    });
-  }
-
-  const { data: torneo } = await torneoRepo.getTorneoById(torneo_id);
-
-  if (!torneo || torneo.estado !== 'activo') {
-    return res.status(400).json({
-      error: 'Regla de negocio',
-      message: 'El torneo debe estar activo'
-    });
-  }
-
-  const { data: equipos } = await equipoRepo.getEquiposByIds([
-    equipo_local_id,
-    equipo_visitante_id
-  ]);
-
-  if (equipos.length !== 2 || equipos[0].juego !== equipos[1].juego) {
-    return res.status(400).json({
-      error: 'Validación',
-      message: 'Los equipos deben ser del mismo juego'
-    });
-  }
-
-  const { data, error } = await partidaRepo.insertPartida({
-    torneo_id,
-    equipo_local_id,
-    equipo_visitante_id,
-    fecha
-  });
-
+  const { data, error } = result;
   if (error) {
     return res.status(500).json({
       error: 'DB Error',
@@ -71,34 +27,27 @@ export async function createPartida(req, res) {
   });
 }
 
-/**
- * Registrar resultado
- */
 export async function registrarResultado(req, res) {
   const { id } = req.params;
   const { resultado } = req.body;
 
-  if (!resultado) {
+  const result = await service.registrarResultado(id, resultado);
+
+  if (result?.error) {
     return res.status(400).json({
       error: 'Validación',
-      message: 'Resultado obligatorio'
+      message: result.error
     });
   }
 
-  await partidaRepo.updateResultado(id, resultado);
-
-  res.json({
-    message: 'Resultado registrado'
-  });
+  res.json({ message: 'Resultado registrado' });
 }
 
-/**
- * Listar partidas por torneo
- */
 export async function getPartidasByTorneo(req, res) {
   const { torneoId } = req.params;
 
-  const { data, error } = await partidaRepo.getPartidasByTorneo(torneoId);
+  const { data, error } =
+    await service.listarPartidasPorTorneo(torneoId);
 
   if (error) {
     return res.status(500).json({
@@ -107,17 +56,21 @@ export async function getPartidasByTorneo(req, res) {
     });
   }
 
-  const partidas = data.map(p => new Partida(p).toPublic());
-
   res.json({
-    data: partidas
+    data: data.map(p => new Partida(p).toPublic())
   });
 }
 
 export async function getPartida(req, res) {
   const { id } = req.params;
-  const { data, error } = await partidaRepo.getPartidaById(id);
 
-  if (error) return res.status(404).json({ error: 'Partida no encontrada' });
+  const { data, error } = await service.obtenerPartida(id);
+
+  if (error || !data) {
+    return res.status(404).json({
+      error: 'Partida no encontrada'
+    });
+  }
+
   res.json(data);
 }

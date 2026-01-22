@@ -15,3 +15,17 @@ export async function getJugadorById(id) {
     .eq('id', id)
     .single();
 }
+
+export async function getTorneosByJugador(jugadorId) {
+  return supabase
+    .from('jugadores')
+    .select(`
+      equipos (
+        equipos_torneos (
+          torneos (*)
+        )
+      )
+    `)
+    .eq('id', jugadorId)
+    .single();
+}

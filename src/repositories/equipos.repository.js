@@ -23,3 +23,25 @@ export async function updateEquipo(id, data) {
 export async function deleteEquipo(id) {
   return await supabase.from('equipos').delete().eq('id', id);
 }
+
+export async function getEquiposConVictorias() {
+  const { data, error } = await supabase
+    .from('partidas')
+    .select('resultado, equipo_local_id, equipo_visitante_id')
+    .not('resultado', 'is', null);
+
+  if (error) return { data: null, error };
+
+  const victorias = {};
+
+  data.forEach(p => {
+    const ganador =
+      p.resultado === 'local'
+        ? p.equipo_local_id
+        : p.equipo_visitante_id;
+
+    victorias[ganador] = (victorias[ganador] || 0) + 1;
+  });
+
+  return { data: victorias, error: null };
+}

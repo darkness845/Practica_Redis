@@ -46,3 +46,13 @@ export async function deleteEquipo(req, res) {
 
   res.status(204).send();
 }
+
+export async function rankingEquipos(req, res) {
+  const { data } = await repo.getEquiposConVictorias();
+
+  const ranking = Object.entries(data)
+    .map(([equipo_id, victorias]) => ({ equipo_id, victorias }))
+    .sort((a, b) => b.victorias - a.victorias);
+
+  res.json(ranking);
+}

@@ -22,7 +22,7 @@ export function getAllTorneos() {
 
 export function getEquiposByTorneo(torneoId) {
   return supabase
-    .from('equipos_torneo')
+    .from('equipos_torneos')
     .select('equipos (*)')
     .eq('torneo_id', torneoId);
 }

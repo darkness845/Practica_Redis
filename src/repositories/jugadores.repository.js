@@ -9,39 +9,24 @@ export async function getJugadores() {
 }
 
 export async function getJugadorById(id) {
-  return await supabase
-    .from('jugadores')
-    .select('*')
-    .eq('id', id)
-    .single();
+  return await supabase.from('jugadores').select('*').eq('id', id).single();
 }
 
 export async function getTorneosByJugador(jugadorId) {
-  return supabase
-    .from('jugadores')
+  return supabase.from('jugadores')
     .select(`
       equipos (
         equipos_torneos (
           torneos (*)
         )
       )
-    `)
-    .eq('id', jugadorId)
-    .single();
+    `).eq('id', jugadorId).single();
 }
 
 export async function updateJugador(id, data) {
-  return supabase
-    .from('jugadores')
-    .update(data)
-    .eq('id', id)
-    .select()
-    .single();
+  return supabase.from('jugadores').update(data).eq('id', id).select().single();
 }
 
 export async function deleteJugador(id) {
-  return supabase
-    .from('jugadores')
-    .delete()
-    .eq('id', id);
+  return supabase.from('jugadores').delete().eq('id', id);
 }

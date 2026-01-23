@@ -13,22 +13,17 @@ export function getPartidasByTorneo(torneoId) {
 }
 
 export function getPartidasByEquipo(equipoId) {
-  return supabase
-    .from('partidas')
-    .select('*')
+  return supabase.from('partidas').select('*')
     .or(
       `equipo_local_id.eq.${equipoId},equipo_visitante_id.eq.${equipoId}`
     );
 }
 
 export function getPartidaById(id) {
-  return supabase
-    .from('partidas')
+  return supabase.from('partidas')
     .select(`
       *,
       equipo_local:equipos!partidas_equipo_local_id_fkey(nombre),
       equipo_visitante:equipos!partidas_equipo_visitante_id_fkey(nombre)
-    `)
-    .eq('id', id)
-    .single();
+    `).eq('id', id).single();
 }

@@ -1,5 +1,6 @@
 import { Torneo } from '../models/Torneo.js';
 import * as service from '../services/torneos.service.js';
+import { redis } from '../config/redis.js';
 
 export async function createTorneo(req, res) {
   const result = await service.crearTorneo(req.body);
@@ -18,6 +19,9 @@ export async function createTorneo(req, res) {
       message: error.message
     });
   }
+
+  // invalidar cache
+  await redis.del('cache:/api/torneos');
 
   const torneo = new Torneo(data);
 
@@ -40,6 +44,9 @@ export async function asignarEquipos(req, res) {
     });
   }
 
+  // invalidar cache
+  await redis.del(`cache:/api/torneos/${torneoId}/equipos`);
+
   res.json({ message: 'Equipos asignados correctamente' });
 }
 
@@ -56,18 +63,26 @@ export async function cambiarEstado(req, res) {
     });
   }
 
+  // invalidar cache
+  await redis.del('cache:/api/torneos');
+
   res.json({
     message: `Torneo cambiado a estado ${estado}`
   });
 }
 
 export async function getTorneos(req, res) {
+  console.log('🔵 TORNEOS DESDE SUPABASE');
+
   const { data, error } = await service.listarTorneos();
   if (error) return res.status(500).json(error);
+
   res.json(data);
 }
 
 export async function getEquiposDeTorneo(req, res) {
+  console.log('🔵 EQUIPOS DESDE SUPABASE');
+
   const { torneoId } = req.params;
 
   const { data, error } =
@@ -75,7 +90,8 @@ export async function getEquiposDeTorneo(req, res) {
 
   if (error) return res.status(500).json(error);
 
-  res.json(data.map(e => e.equipos));
+  const response = data.map(e => e.equipos);
+  res.json(response);
 }
 
 export async function updateTorneo(req, res) {
@@ -96,6 +112,10 @@ export async function updateTorneo(req, res) {
       error: 'Torneo no encontrado'
     });
   }
+
+  // invalidar cache
+  await redis.del('cache:/api/torneos');
+  await redis.del(`cache:/api/torneos/${torneoId}/equipos`);
 
   res.json(data);
 }

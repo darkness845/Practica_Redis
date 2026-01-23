@@ -9,12 +9,7 @@ export function getTorneoById(id) {
 }
 
 export function updateTorneo(id, data) {
-  return supabase
-    .from('torneos')
-    .update(data)
-    .eq('id', id)
-    .select()
-    .single();
+  return supabase.from('torneos').update(data).eq('id', id).select().single();
 }
 
 export function insertTorneoEquipos(data) {
@@ -26,9 +21,6 @@ export function getAllTorneos() {
 }
 
 export function getEquiposByTorneo(torneoId) {
-  return supabase
-    .from('equipos_torneos')
-    .select('equipos (*)')
-    .eq('torneo_id', torneoId);
+  return supabase.from('equipos_torneos').select('equipos (*)').eq('torneo_id', torneoId);
 }
 

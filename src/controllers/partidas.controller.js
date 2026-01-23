@@ -1,5 +1,6 @@
 import { Partida } from '../models/Partida.js';
 import * as service from '../services/partidas.service.js';
+import { redis } from '../config/redis.js';
 
 export async function createPartida(req, res) {
   const result = await service.crearPartida(req.body);
@@ -18,6 +19,10 @@ export async function createPartida(req, res) {
       message: error.message
     });
   }
+
+  // invalidar cache
+  await redis.del('cache:/api/partidas');
+  await redis.del(`cache:/api/partidas/torneo/${req.body.torneo_id}`);
 
   const partida = new Partida(data);
 
@@ -40,10 +45,15 @@ export async function registrarResultado(req, res) {
     });
   }
 
+  // invalidar cache
+  await redis.del(`cache:/api/partidas/${id}`);
+
   res.json({ message: 'Resultado registrado' });
 }
 
 export async function getPartidasByTorneo(req, res) {
+  console.log('🔵 PARTIDAS POR TORNEO DESDE SUPABASE');
+
   const { torneoId } = req.params;
 
   const { data, error } =
@@ -62,6 +72,8 @@ export async function getPartidasByTorneo(req, res) {
 }
 
 export async function getPartida(req, res) {
+  console.log('🔵 PARTIDA DESDE SUPABASE');
+
   const { id } = req.params;
 
   const { data, error } = await service.obtenerPartida(id);

@@ -24,9 +24,6 @@ export async function obtenerRankingEquipos() {
   const { data } = await repo.getEquiposConVictorias();
 
   return Object.entries(data)
-    .map(([equipo_id, victorias]) => ({
-      equipo_id: Number(equipo_id),
-      victorias
-    }))
+    .map(([equipo_id, victorias]) => ({equipo_id: Number(equipo_id), victorias}))
     .sort((a, b) => b.victorias - a.victorias);
 }
